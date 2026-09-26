@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const AdmZip = require("adm-zip");
-const { applyPatch } = require("diff");
 
 const zipName = "TROSECNIK_3D_3_1_SURVIVAL_EXPEDITION_VERCEL (1).zip";
 const zipPath = path.join(__dirname, zipName);
@@ -15,16 +14,60 @@ fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
 new AdmZip(zipPath).extractAllTo(outDir, true);
 
-function applyUnifiedPatch(relativePath, patchPath) {
+function applyUnifiedDiff(source, patchText) {
+  const src = source.split("\n");
+  const patch = patchText.split("\n");
+  const out = [];
+  let srcIndex = 0;
+  let i = 0;
+
+  while (i < patch.length) {
+    const header = patch[i].match(/^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/);
+    if (!header) { i++; continue; }
+
+    const oldStart = Number(header[1]) - 1;
+    while (srcIndex < oldStart) out.push(src[srcIndex++]);
+    i++;
+
+    while (i < patch.length && !patch[i].startsWith("@@ ")) {
+      const line = patch[i];
+      if (line.startsWith("--- ") || line.startsWith("+++ ")) { i++; continue; }
+      if (line === "\\ No newline at end of file") { i++; continue; }
+
+      const mark = line[0];
+      const text = line.slice(1);
+
+      if (mark === " ") {
+        if (src[srcIndex] !== text) {
+          throw new Error("Patch context mismatch near source line " + (srcIndex + 1));
+        }
+        out.push(src[srcIndex++]);
+      } else if (mark === "-") {
+        if (src[srcIndex] !== text) {
+          throw new Error("Patch deletion mismatch near source line " + (srcIndex + 1));
+        }
+        srcIndex++;
+      } else if (mark === "+") {
+        out.push(text);
+      } else if (line.length === 0) {
+        // Empty line between hunks or trailing newline.
+      }
+      i++;
+    }
+  }
+
+  while (srcIndex < src.length) out.push(src[srcIndex++]);
+  return out.join("\n");
+}
+
+function applyPatchFile(relativePath, patchPath) {
   const target = path.join(outDir, relativePath);
   const patch = fs.readFileSync(path.join(__dirname, patchPath), "utf8");
   const source = fs.readFileSync(target, "utf8");
-  const result = applyPatch(source, patch);
-  if (result === false) throw new Error("Patch failed: " + patchPath);
-  fs.writeFileSync(target, result);
+  fs.writeFileSync(target, applyUnifiedDiff(source, patch));
 }
 
-applyUnifiedPatch("src/game_logic.js", "patches/survival_plus10_game_logic.patch");
+applyPatchFile("src/game_logic.js", "patches/survival_plus10_game_logic.patch");
 
 const rendererPath = path.join(outDir, "src/renderer.js");
 let renderer = fs.readFileSync(rendererPath, "utf8");
