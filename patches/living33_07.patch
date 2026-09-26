@@ -1,0 +1,11 @@
+--- a/src/game_logic.js
++++ b/src/game_logic.js
+@@ -407,7 +429,7 @@
+ }else draw(staticPalmMesh,identity(),[1,1,1],0,0);
+ draw(seaMesh,identity(),[1,1,1],2,1);let visible=OBJ.filter(o=>Math.hypot(hero.x-o.x,hero.z-o.z)<33);for(let o of visible)drawObject(o,hero.target?.id===o.id&&Math.hypot(hero.x-o.x,hero.z-o.z)<6);if(firstPerson)renderer.drawFirstPersonBody({walk:hero.walk,working:hero.working,kind:hero.kind,weapon:activeWeapon(),running:hero.walk>1.12,time:elapsed});if(!firstPerson){if(renderer.heroReady)draw('disc',T(hero.x,H(hero.x,hero.z)+.018,hero.z,1.0,1,.72,hero.yaw),[.18,.16,.12],3,0);drawRobinson();renderer.drawHero({x:hero.x,y:H(hero.x,hero.z),z:hero.z,yaw:hero.yaw,walk:hero.walk,working:hero.working,kind:hero.kind},Math.min(.055,Math.max(0,elapsed-(renderer.heroLastTime??elapsed))));}renderer.heroLastTime=elapsed;updateQuestPointer();updateMinimap();renderer.endFrame();}
+ // Movement, obstacle sliding and camera clipping. All coordinates remain in one contiguous world.
+-const keys=new Set(),joy={x:0,y:0},touches=new Map();let running=false,rotating=false,drag={x:0,y:0,t:0,moved:false},pinchPrevious=0,visibleObj=null,autogoal=null,prevMovement=false,pane='',mini=null;
++const keys=new Set(),joy={x:0,y:0},touches=new Map();let running=false,crouching=false,rotating=false,drag={x:0,y:0,t:0,moved:false},pinchPrevious=0,visibleObj=null,autogoal=null,prevMovement=false,pane='',mini=null;
+ function d2(a,b){let bx=b?.type==='boar'?(b._wx??b.x):b.x,bz=b?.type==='boar'?(b._wz??b.z):b.z;return Math.hypot(a.x-bx,a.z-bz)}
+ function currentQuest(){return QUESTS.find(q=>(!q.active||q.active(state))&&!state.flags['quest-'+q.id]&&!q.done(state))||null}
+ function currentQuestTarget(){
