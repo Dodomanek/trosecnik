@@ -1,0 +1,26 @@
+name: Package Vercel ZIP
+on:
+  push:
+    branches:
+      - trosecnik-3-survival-upgrade
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Vercel package
+        run: |
+          cp -R TROSECNIK_3D_2_1_VERCEL_BALICEK TROSECNIK_3_0_VERCEL_BALICEK
+          cd TROSECNIK_3_0_VERCEL_BALICEK
+          zip -r ../TROSECNIK_3_0_VERCEL_BALICEK.zip .
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: TROSECNIK_3_0_VERCEL_BALICEK
+          path: TROSECNIK_3_0_VERCEL_BALICEK.zip
+          if-no-files-found: error
