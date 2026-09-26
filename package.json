@@ -1,0 +1,11 @@
+{
+  "name": "trosecnik-3-1-survival-expedition",
+  "version": "3.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16"
+  }
+}
