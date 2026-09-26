@@ -85,6 +85,7 @@ applyPatchFiles("src/game_logic.js", [
   "patches/island32_game_logic_08.patch"
 ]);
 applyPatchFile("src/camp_logistics.js", "patches/island32_camp_logistics.patch");
+applyPatchFile("src/game_logic.js", "patches/living33_game_logic.patch");
 
 const rendererPath = path.join(outDir, "src/renderer.js");
 let renderer = fs.readFileSync(rendererPath, "utf8");
@@ -117,17 +118,21 @@ fs.writeFileSync(rendererPath, renderer);
 
 const indexPath = path.join(outDir, "index.html");
 let index = fs.readFileSync(indexPath, "utf8")
-  .replaceAll("Trosečník 3D 3.1 · Survival Expedition", "Trosečník 3D 3.2 · Expedition & Island Life")
-  .replace("SURVIVAL EXPEDITION · <i>3.1</i>", "EXPEDITION & ISLAND LIFE · <i>3.2</i>")
-  .replace("TROSEČNÍK 3D 3.1 · SURVIVAL EXPEDITION", "TROSEČNÍK 3D 3.2 · EXPEDITION & ISLAND LIFE")
-  .replace("Trosečník 3D 3.0 Alfa 1: Živý ostrov. První hratelná část verze 3.0 s táborovým skladem, nosností, novým batohem a dosavadními čtyřmi kapitolami.", "Trosečník 3D 3.2: Expedition & Island Life. Rozšířený survival s lovem, pastmi, poškozením tábora, novými lokacemi a vedlejším příběhem.");
+  .replaceAll("Trosečník 3D 3.1 · Survival Expedition", "Trosečník 3D 3.3 · Living Island & Progression")
+  .replace("SURVIVAL EXPEDITION · <i>3.1</i>", "LIVING ISLAND & PROGRESSION · <i>3.3</i>")
+  .replace("TROSEČNÍK 3D 3.1 · SURVIVAL EXPEDITION", "TROSEČNÍK 3D 3.3 · LIVING ISLAND & PROGRESSION")
+  .replace("Trosečník 3D 3.0 Alfa 1: Živý ostrov. První hratelná část verze 3.0 s táborovým skladem, nosností, novým batohem a dosavadními čtyřmi kapitolami.", "Trosečník 3D 3.3: Living Island & Progression. Skill tree, kvalita výbavy, stealth, zranění, jeskyně, vor, vztahy s NPC a dynamické události.")
+  .replace('<button id="run" class="subaction">↟<small>BĚH</small></button>', '<button id="run" class="subaction">↟<small>BĚH</small></button><button id="crouchBtn" class="subaction">🤫<small>PLÍŽIT</small></button>');
 fs.writeFileSync(indexPath, index);
+
+const stylePath = path.join(outDir, "src/style.css");
+fs.appendFileSync(stylePath, "\n#rightActions{flex-wrap:wrap;justify-content:flex-end;max-width:235px}\n");
 
 const manifestPath = path.join(outDir, "manifest.webmanifest");
 fs.writeFileSync(manifestPath, JSON.stringify({
-  name:"Trosečník 3D 3.2 · Expedition & Island Life",
+  name:"Trosečník 3D 3.3 · Living Island & Progression",
   short_name:"Trosečník 3D",
-  description:"Rozšířený ostrovní survival: lov, pasti, udírna, bouřkové škody, opravy, nová zvířata a vedlejší příběh.",
+  description:"Hlubší survival: skill tree, kvalita výbavy, stealth a hluk, zranění, jeskyně, vor, vztahy s NPC a dynamické události.",
   start_url:"./",scope:"./",display:"standalone",orientation:"any",
   background_color:"#0c2229",theme_color:"#132c31",
   icons:[{src:"assets/icon.svg",sizes:"any",type:"image/svg+xml",purpose:"any maskable"}]
@@ -138,4 +143,4 @@ if (!fs.existsSync(entry)) {
   throw new Error("Build completed, but dist/index.html is missing.");
 }
 
-console.log("Trosečník 3.2 Expedition & Island Life prepared in dist/");
+console.log("Trosečník 3.3 Living Island & Progression prepared in dist/");
