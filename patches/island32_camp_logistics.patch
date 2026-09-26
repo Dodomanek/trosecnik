@@ -1,0 +1,20 @@
+--- /mnt/data/trosecnik31_work/src/camp_logistics.js	2026-09-22 22:26:15.000000000 +0000
++++ /mnt/data/trosecnik32_work/src/camp_logistics.js	2026-09-26 13:33:08.605939939 +0000
+@@ -3,7 +3,7 @@
+ export const STORABLE = Object.freeze([
+  'wood','stone','fiber','coconut','fish','bandage','herb','ration',
+  'cord','tinder','handle','reeds','clay','flint','berries','salt',
+- 'trailSnack','fishJerky','herbalPoultice','reedMat','resin'
++ 'trailSnack','fishJerky','herbalPoultice','reedMat','resin','meat','smokedMeat','spoiledMeat','hide'
+ ]);
+ const ALLOWED = new Set(STORABLE);
+ export const ITEM_WEIGHTS = Object.freeze({
+@@ -11,7 +11,7 @@
+  ration:2,axe:2.5,spear:2.5,scrap:1.6,core:2,lens:1.1,
+  brace:3,kit:2.5,herbalPoultice:.7,reedMat:1.4,trailSnack:.6,fishJerky:.5,
+  bandage:.3,herb:.2,fiber:.3,cord:.5,tinder:.2,reeds:.55,berries:.25,
+- salt:.5,resin:.7,handle:1,clayFlask:1.7,flintBlade:.7,torch:1.3,
++ salt:.5,resin:.7,meat:1.1,smokedMeat:.75,spoiledMeat:1.0,hide:.8,handle:1,clayFlask:1.7,flintBlade:.7,torch:1.3,
+  compass:.6,chart:.2,flare:.6,seal:.5,pouch:.6
+ });
+ export const BASE_LOAD = 28;
