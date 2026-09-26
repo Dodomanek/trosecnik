@@ -1,0 +1,19 @@
+--- a/src/game_logic.js
++++ b/src/game_logic.js
+@@ -658,12 +686,14 @@
+ };
+ function availableWeapon(id){return id==='fists'||(state.bag[id]||0)>0}
+ function activeWeapon(){if(!availableWeapon(state.equipped))state.equipped='fists';return state.equipped||'fists'}
+-function weaponStats(){let id=activeWeapon(),w={...WEAPONS[id]};if(id==='fists'&&state.skills.brawler)w.damage*=1.35;if((id==='spear'||id==='hardenedSpear')&&state.skills.spearman)w.damage*=1.25;if(id==='axe'&&state.skills.woodsman)w.damage*=1.22;if(state.skills.combatMaster)w.damage*=1.18;if(id!=='fists'&&state.weaponEdge>0)w.damage*=1+Math.min(.16,state.weaponEdge/625);if(state.skills.stamina2)w.cost*=.8;return{id,...w}}
++const QUALITY_NAMES=['Primitivní','Zpevněná','Mistrovská'];
++function weaponGrade(id){return clamp(Math.floor(state.weaponQuality?.[id]||0),0,2)}
++function weaponStats(){let id=activeWeapon(),w={...WEAPONS[id]};let grade=weaponGrade(id);if(id!=='fists')w.damage*=1+grade*.15;if(id==='fists'&&state.skills.brawler)w.damage*=1.35;if((id==='spear'||id==='hardenedSpear')&&state.skills.spearman)w.damage*=1.25;if(id==='axe'&&state.skills.woodsman)w.damage*=1.22;if(state.skills.combatMaster)w.damage*=1.18;if(id!=='fists'&&state.weaponEdge>0)w.damage*=1+Math.min(.16,state.weaponEdge/625);if(state.skills.stamina2)w.cost*=.8;return{id,...w}}
+ function weaponStatsFor(id){let prev=state.equipped;state.equipped=id;let w=weaponStats();state.equipped=prev;return w}
+ function inventoryLossOnDeath(){const keep=new Set(['axe','spear','hardenedSpear','club','stoneHammer','flintBlade','fieldPack','leafArmor','compass','core','lens','chart','seal']);const ratio=state.skills.scavenger?.22:.42;let lost=[];for(const [id,n0] of Object.entries(state.bag)){if(keep.has(id)||n0<=0)continue;let n=Math.floor(n0*ratio);if(n>0){state.bag[id]-=n;lost.push((ITEM[id]?.[1]||id)+' ×'+n)}}return lost}
+ function handleDeath(reason='zranění'){
+  state.deathCount=(state.deathCount||0)+1;let lost=inventoryLossOnDeath(),cp=state.checkpoint||BASE.checkpoint;
+- state.hp=55;state.food=Math.max(35,state.food);state.water=Math.max(35,state.water);state.energy=72;state.exposure=0;state.wet=0;state.morale=clamp(state.morale-22,0,100);state.survivalStreak=0;
++ state.hp=55;state.food=Math.max(35,state.food);state.water=Math.max(35,state.water);state.energy=72;state.exposure=0;state.wet=0;state.sickness=0;state.injuries={bleeding:0,fracture:0,infection:0};state.morale=clamp(state.morale-22,0,100);state.survivalStreak=0;
+  hero.x=Number(cp.x)||-1;hero.z=Number(cp.z)||-12;hero.y=H(hero.x,hero.z);state.x=hero.x;state.z=hero.z;pending=null;autogoal=null;hero.target=null;camGround=hero.y;
+  state.journal.push('Den '+state.day+': Robinson zemřel ('+reason+'). Probral se u posledního bezpečného bodu. Ztratil část zásob.');
+  voiceEvent({type:'injury'});flash('☠ Robinson zemřel. Návrat k poslednímu úkolu.'+(lost.length?' Ztraceno: '+lost.slice(0,3).join(', ')+(lost.length>3?'…':''):''));changed=true;save(true);updateUI();
