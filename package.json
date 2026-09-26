@@ -1,11 +1,7 @@
 {
-  "name": "trosecnik-3-3-living-island-progression",
-  "version": "3.3.0",
+  "name": "trosecnik-3-3-1-visual-ui-mega",
+  "version": "3.3.1",
   "private": true,
-  "scripts": {
-    "build": "node build.cjs"
-  },
-  "dependencies": {
-    "adm-zip": "^0.5.16"
-  }
+  "scripts": {"build":"node build.cjs"},
+  "dependencies":{"adm-zip":"^0.5.16"}
 }
