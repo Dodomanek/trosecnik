@@ -1,0 +1,17 @@
+const fs=require('fs');
+const path=require('path');
+const out=path.join(__dirname,'dist');
+const srcDir=path.join(out,'src');
+if(!fs.existsSync(path.join(out,'index.html')))throw new Error('dist/index.html missing');
+fs.mkdirSync(srcDir,{recursive:true});
+fs.copyFileSync(path.join(__dirname,'overlays','tool_combat_upgrade.js'),path.join(srcDir,'tool_combat_upgrade.js'));
+fs.copyFileSync(path.join(__dirname,'overlays','tool_combat_upgrade.css'),path.join(srcDir,'tool_combat_upgrade.css'));
+const indexPath=path.join(out,'index.html');
+let html=fs.readFileSync(indexPath,'utf8');
+if(!html.includes('tool_combat_upgrade.css'))html=html.replace('</head>','<link rel="stylesheet" href="src/tool_combat_upgrade.css"></head>');
+if(!html.includes('tool_combat_upgrade.js'))html=html.replace('</body>','<script src="src/tool_combat_upgrade.js"></script></body>');
+html=html.replaceAll('3.3.1 · Visual Final + UI Polish','3.3.3 · Tools & Combat Upgrade').replaceAll('3.3.1 · VISUAL FINAL + UI POLISH','3.3.3 · TOOLS & COMBAT UPGRADE');
+fs.writeFileSync(indexPath,html);
+const readme=path.join(out,'TOOLS_COMBAT_3_3_3.txt');
+fs.writeFileSync(readme,'TROSEČNÍK 3D 3.3.3 – TOOLS & COMBAT UPGRADE\n\n- Sekera: stromy/dřevo vyžadují 3 viditelné zářezy před původní herní interakcí.\n- Kamenné kladivo: kámen/ruda 3 údery.\n- Pazourkový nůž: vláknité rostliny a rákos 2 řezy.\n- Kopí a zpevněné kopí: viditelné bodnutí.\n- Pěsti: viditelný úder.\n- Kyj/kladivo: viditelný úder shora.\n- Levé kliknutí na svět funguje jako útok/práce, pokud je před hráčem zvíře nebo odpovídající surovina.\n- E / AKCE zůstává plně kompatibilní s původní mechanikou.\n');
+console.log('Tools & Combat 3.3.3 injected into dist/');
