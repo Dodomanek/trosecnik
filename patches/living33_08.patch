@@ -1,0 +1,12 @@
+--- a/src/game_logic.js
++++ b/src/game_logic.js
+@@ -502,7 +524,8 @@
+  questPointer.style.top=(box.top+pose.top+Math.sin(elapsed*2.2)*2).toFixed(1)+'px';
+  questPointer.style.transform='translate(-50%, -50%) rotate('+pose.angle.toFixed(2)+'deg)';
+ }
+-function nearbyObject(maxDist=3.15){const max=maxDist+(state.skills.scout?1.6:0);let qobj=currentQuestTarget();if(qobj&&objectAvailable(qobj)&&d2(hero,qobj)<qobj.r+2.1)return qobj;let nearest=null,dd=max;for(let o of OBJ){if(!objectAvailable(o))continue;let r=d2(hero,o)-o.r;if(r<dd){nearest=o;dd=r}}/* In the tutorial, do not let a nearby resource hide an equally reachable quest object. */let focus=currentQuestTarget();if(focus&&objectAvailable(focus)&&d2(hero,focus)-focus.r<max&&(!nearest||d2(hero,focus)-focus.r<dd+.70))return focus;return nearest}
++function objectXZ(o){return {x:['boar','rabbit','crab','snake'].includes(o.type)?(o._wx??o.x):o.x,z:['boar','rabbit','crab','snake'].includes(o.type)?(o._wz??o.z):o.z}}
++function nearbyObject(maxDist=3.15){const max=maxDist+(state.skills.scout?1.6:0);let qobj=currentQuestTarget();if(qobj&&objectAvailable(qobj)&&d2(hero,qobj)<qobj.r+2.1)return qobj;let nearest=null,dd=max;for(let o of OBJ){if(!objectAvailable(o))continue;let pos=objectXZ(o),r=Math.hypot(hero.x-pos.x,hero.z-pos.z)-o.r;if(r<dd){nearest=o;dd=r}}/* In the tutorial, do not let a nearby resource hide an equally reachable quest object. */let focus=currentQuestTarget();if(focus&&objectAvailable(focus)&&d2(hero,focus)-focus.r<max&&(!nearest||d2(hero,focus)-focus.r<dd+.70))return focus;return nearest}
+ function passable(x,z){if(Math.hypot(x/82,z/74)>1.04||H(x,z)<-.45)return false;for(let p of sceneObstacles){let rr=p.r+.33;if((x-p.x)**2+(z-p.z)**2<rr*rr)return false}for(let o of OBJ){if(o.type!=='site'&&o.type!=='wreck')continue;let rr=o.type==='wreck'?1.45:o.site==='shelter'&&state.built.shelter===3?1.4:.48;if((x-o.x)**2+(z-o.z)**2<rr*rr)return false}return true}
+ // Safe-point checkpoint uses ORIGINAL physics collision, not the character's animated mesh.
+ function safeForRecovery(x,z){
