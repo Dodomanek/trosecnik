@@ -1,7 +1,7 @@
 {
-  "name": "trosecnik-3-3-1-visual-ui-mega",
-  "version": "3.3.1",
+  "name": "trosecnik-3-3-3-tools-combat-mega",
+  "version": "3.3.3",
   "private": true,
-  "scripts": {"build":"node build.cjs"},
+  "scripts": {"build":"node build.cjs && node inject-tools-combat.cjs"},
   "dependencies":{"adm-zip":"^0.5.16"}
 }
