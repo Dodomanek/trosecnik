@@ -1,0 +1,51 @@
+name: Deploy Trosecnik MEGA to Vercel
+
+on:
+  push:
+    branches:
+      - mega-visual-ui-3.3.1
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build merged game
+        run: npm run build
+
+      - name: Validate merged output
+        run: |
+          test -f dist/index.html
+          test -f dist/TROSECNIK_3D_3_3_1_VISUAL_UI_MEGA.zip
+          ls -lh dist/TROSECNIK_3D_3_3_1_VISUAL_UI_MEGA.zip
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN secret is missing"
+            exit 2
+          fi
+          vercel deploy dist --yes --prod --token="$VERCEL_TOKEN" --scope=adams-projects-f9cc1601 | tee vercel-url.txt
+
+      - name: Publish deployment URL
+        if: always()
+        run: |
+          if [ -f vercel-url.txt ]; then
+            echo "### Vercel deployment" >> "$GITHUB_STEP_SUMMARY"
+            cat vercel-url.txt >> "$GITHUB_STEP_SUMMARY"
+          fi
