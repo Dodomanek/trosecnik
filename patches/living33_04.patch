@@ -1,0 +1,13 @@
+--- a/src/game_logic.js
++++ b/src/game_logic.js
+@@ -165,6 +179,10 @@
+ // ISLAND LIFE 3.2: camp systems, wildlife and three optional story locations.
+ {id:'site-trapLine',type:'site',site:'trapLine',name:'Lovecké pasti',x:-10.5,z:1.1,r:1.15},
+ {id:'site-dryRack',type:'site',site:'dryRack',name:'Udírna a sušák',x:-9.2,z:-4.5,r:1.15},
++{id:'site-workbench',type:'site',site:'workbench',name:'Pracovní stůl',x:-1.4,z:4.8,r:1.2},
++{id:'site-fence',type:'site',site:'fence',name:'Obranný plot',x:-12.7,z:-2.8,r:1.35},
++{id:'site-watchtower',type:'site',site:'watchtower',name:'Pozorovací věž',x:1.3,z:5.6,r:1.35},
++{id:'site-raft',type:'site',site:'raft',name:'Expediční vor',x:18,z:-52,r:1.55},
+ {id:'rabbitWest',type:'rabbit',name:'Divoký králík · západní stezka',x:-31,z:27,r:.62},
+ {id:'rabbitNorth',type:'rabbit',name:'Divoký králík · horská louka',x:13,z:31,r:.62},
+ {id:'crabSouth',type:'crab',name:'Krab · jižní pobřeží',x:31,z:-47,r:.58},
