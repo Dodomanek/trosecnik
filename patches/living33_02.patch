@@ -1,0 +1,26 @@
+--- a/src/game_logic.js
++++ b/src/game_logic.js
+@@ -31,8 +31,22 @@
+ {id:'combatMaster',name:'Bojovník',icon:'⚔',min:11,desc:'Všechny ruční zbraně dávají +18 % poškození.'},
+ {id:'survivor',name:'Přeživší',icon:'🔥',min:12,desc:'Hlad, žízeň a prochladnutí ubývají pomaleji.'},
+ {id:'ironWill',name:'Železná vůle',icon:'🧠',min:14,desc:'Po kritickém zásahu dostaneš krátkou odolnost.'},
+-{id:'masterExplorer',name:'Mistr ostrova',icon:'🏝',min:15,desc:'Více XP za objevování a rychlejší pohyb mimo tábor.'}
++{id:'masterExplorer',name:'Mistr ostrova',icon:'🏝',min:15,desc:'Více XP za objevování a rychlejší pohyb mimo tábor.'},
++{id:'silentStep',name:'Tichý krok',icon:'🤫',min:6,desc:'Plížení vytváří o 55 % méně hluku a zvěř tě později odhalí.'},
++{id:'medic',name:'Polní zdravotník',icon:'🩺',min:8,desc:'Obvazy a byliny léčí krvácení, infekci a zlomeniny účinněji.'},
++{id:'craftMaster',name:'Mistr dílny',icon:'⚒',min:10,desc:'Vylepšení zbraní na pracovním stole stojí méně materiálu.'},
++{id:'sailor',name:'Mořeplavec',icon:'⛵',min:9,desc:'Plavby na voru stojí méně energie a přinášejí lepší nálezy.'}
+ ];
++const SKILL_BRANCHES=[
++ {id:'survival',name:'PŘEŽITÍ',icon:'🔥',skills:['endurance','hydration','toughness','stamina2','survivor','ironWill','medic']},
++ {id:'craft',name:'ŘEMESLO',icon:'🔨',skills:['gatherer','builder','woodsman','scavenger','armor','craftMaster']},
++ {id:'combat',name:'LOV A BOJ',icon:'⚔',skills:['brawler','spearman','fisher','combatMaster','silentStep']},
++ {id:'explore',name:'PRŮZKUM',icon:'🧭',skills:['scout','nightEyes','tracker','sailor','masterExplorer']}
++];
++const SKILL_REQ={stamina2:['endurance'],survivor:['stamina2'],ironWill:['toughness','survivor'],medic:['toughness'],woodsman:['gatherer'],armor:['builder'],craftMaster:['builder','woodsman'],combatMaster:['spearman'],silentStep:['scout'],tracker:['scout'],sailor:['scout'],masterExplorer:['tracker','sailor']};
++function skillReady(sk){return state.level>=sk.min&&(SKILL_REQ[sk.id]||[]).every(id=>state.skills[id])}
++function skillRequirementText(sk){const req=SKILL_REQ[sk.id]||[];return req.length?' · Vyžaduje: '+req.map(id=>SKILLS.find(s=>s.id===id)?.name||id).join(', '):''}
++
+ const QUESTS=[{id:'crate',name:'První zásoby',desc:'Otevři bednu vyplavenou na pláži.',target:'crate',xp:95,done:s=>s.flags.crate},{id:"firstwood",name:"První kus dřeva",desc:"Seber naplavené dřevo na pláži. Bedna sama tábor nepostaví.",target:"driftwood",xp:35,chapter:"I",done:s=>!!s.flags.firstWood},
+ {id:"firststone",name:"Tvrdší než písek",desc:"Najdi a zvedni pobřežní kameny potřebné na nástroje.",target:"stonePile",xp:35,chapter:"I",done:s=>!!s.flags.firstStone},
+ {id:"firstfiber",name:"Kde vzít vlákna",desc:"Sesbírej vláknité listy z palmy.",target:"palmFiber",xp:40,chapter:"I",done:s=>!!s.flags.firstFiber},
